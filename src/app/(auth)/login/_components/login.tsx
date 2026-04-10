@@ -16,18 +16,47 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { INITIAL_LOGIN_FORM } from "@/constants/auth-constant";
-import { LoginForm, loginSchema } from "@/validations/auth-validation";
+import {
+  INITIAL_LOGIN_FORM,
+  INITIAL_STATE_LOGIN_FORM,
+} from "@/constants/auth-constant";
+import { LoginForm, loginSchemaForm } from "@/validations/auth-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { login } from "../actions";
+import { Loader2 } from "lucide-react";
 
 export default function Login() {
   const form = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginSchemaForm),
     defaultValues: INITIAL_LOGIN_FORM,
   });
 
-  const onSubmit = form.handleSubmit(async (data) => {});
+  // useActionState di gunakan untuk mengelola state dari proses login, termasuk status dan error yang mungkin terjadi selama proses tersebut.
+  const [loginState, LoginAction, isPendingLogin] = useActionState(
+    login,
+    INITIAL_STATE_LOGIN_FORM,
+  );
+
+  const onSubmit = form.handleSubmit(async (data) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+
+    startTransition(() => {
+      LoginAction(formData);
+    });
+  });
+
+  useEffect(() => {
+    if (loginState?.status === "error") {
+      startTransition(() => {
+        LoginAction(null);
+      });
+    }
+  }, [loginState]);
 
   return (
     <Card>
@@ -79,7 +108,9 @@ export default function Login() {
               )}
             />
           </FieldGroup>
-          <Button type="submit">Login</Button>
+          <Button type="submit">
+            {isPendingLogin ? <Loader2 className="animate-spin" /> : "Login"}
+          </Button>
         </form>
       </CardContent>
     </Card>
