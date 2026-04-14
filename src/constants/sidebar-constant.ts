@@ -5,7 +5,6 @@ import {
   SquareMenu,
   Users,
 } from "lucide-react";
-import { da } from "zod/locales";
 
 export const SIDEBAR_MENU_LIST = {
   admin: [
