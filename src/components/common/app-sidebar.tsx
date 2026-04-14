@@ -30,15 +30,13 @@ import {
 import { TooltipProvider } from "../ui/tooltip";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { signOut } from "@/actions/auth-action";
+import { useAuthStore } from "@/stores/auth-store";
 
 export default function AppSidebar() {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
-  const profile = {
-    name: "Adhitya Ramadhan Putra",
-    role: "admin",
-    avatar_url: "",
-  };
+  const profile = useAuthStore((state) => state.profile);
   return (
     <TooltipProvider>
       <Sidebar collapsible="icon">
@@ -92,15 +90,18 @@ export default function AppSidebar() {
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
                     <Avatar>
-                      <AvatarImage src="" alt="" />
-                      <AvatarFallback className="rounded-lg">A</AvatarFallback>
+                      <AvatarImage
+                        src={profile.avatar_url}
+                        alt={profile.name}
+                      />
+                      <AvatarFallback className="rounded-lg">
+                        {profile.name?.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="leading-tight">
-                      <h4 className="truncate font-medium">
-                        Adhitya Ramadhan Putra
-                      </h4>
-                      <p className="text-muted-foreground truncate text-xs">
-                        Admin
+                      <h4 className="truncate font-medium">{profile.name}</h4>
+                      <p className="text-muted-foreground truncate text-xs capitalize">
+                        {profile.role}
                       </p>
                     </div>
                     <EllipsisVertical className="ml-auto size-4" />
@@ -115,24 +116,25 @@ export default function AppSidebar() {
                   <DropdownMenuLabel>
                     <div className="flex items-center gap-2 px-1 py-1.5">
                       <Avatar>
-                        <AvatarImage src="" alt="" />
+                        <AvatarImage
+                          src={profile.avatar_url}
+                          alt={profile.name}
+                        />
                         <AvatarFallback className="rounded-lg">
-                          A
+                          {profile.name?.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="leading-tight">
-                        <h4 className="truncate font-medium">
-                          Adhitya Ramadhan Putra
-                        </h4>
-                        <p className="text-muted-foreground truncate text-xs">
-                          Admin
+                        <h4 className="truncate font-medium">{profile.name}</h4>
+                        <p className="text-muted-foreground truncate text-xs capitalize">
+                          {profile.role}
                         </p>
                       </div>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => signOut()}>
                       <LogOut />
                       Logout
                     </DropdownMenuItem>
