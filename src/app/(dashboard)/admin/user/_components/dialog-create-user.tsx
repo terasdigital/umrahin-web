@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import {
   INITIAL_CREATE_USER_FORM,
   INITIAL_STATE_CREATE_USER,
+  ROLE_LIST,
 } from "@/constants/auth-constant";
 import { UserForm, userSchemaForm } from "@/validations/auth-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +26,15 @@ import { startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { createUser } from "../actions";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
   const form = useForm<UserForm>({
@@ -118,16 +128,24 @@ export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel>Role</FieldLabel>
-                <Input
-                  {...field}
-                  id={field.name}
-                  aria-invalid={fieldState.invalid}
-                  placeholder="Insert Your Role"
-                  autoComplete="off"
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+                <Select onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder={`Select ${field.name}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>{field.name}</SelectLabel>
+                      {ROLE_LIST.map((item) => (
+                        <SelectItem key={item.label} value={item.value}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Select>
               </Field>
             )}
           />
@@ -160,7 +178,7 @@ export default function DialogCreateUser({ refetch }: { refetch: () => void }) {
             {isPendingCreateUser ? (
               <Loader2 className="animate-spin" />
             ) : (
-              "Login"
+              "Create"
             )}
           </Button>
         </DialogFooter>
