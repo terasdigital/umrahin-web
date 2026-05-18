@@ -16,6 +16,7 @@ import { cn, convertIDR } from "@/lib/utils";
 import { HEADER_TABLE_MENU } from "@/constants/menu-constant";
 import { Table } from "@/validations/table-validation";
 import { HEADER_TABLE_TABLE } from "@/constants/table-constant";
+import DialogCreateTable from "./dialog-create-table";
 
 export default function TableManagement() {
   const supabase = createClient();
@@ -42,7 +43,7 @@ export default function TableManagement() {
 
       if (currentSearch) {
         query.or(
-          `name.ilike.%${currentSearch}%, capacity.ilike.%${currentSearch}%, status.ilike.%${currentSearch}%`,
+          `name.ilike.%${currentSearch}%,capacity.eq.${Number(currentSearch)},status.ilike.%${currentSearch}%`,
         );
       }
 
@@ -139,7 +140,7 @@ export default function TableManagement() {
             <DialogTrigger asChild>
               <Button variant="outline">Create</Button>
             </DialogTrigger>
-            {/* <DialogCreateTable refetch={refetch} /> */}
+            <DialogCreateTable refetch={refetch} />
           </Dialog>
         </div>
       </div>
