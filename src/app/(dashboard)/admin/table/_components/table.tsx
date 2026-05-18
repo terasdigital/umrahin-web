@@ -18,6 +18,7 @@ import { Table } from "@/validations/table-validation";
 import { HEADER_TABLE_TABLE } from "@/constants/table-constant";
 import DialogCreateTable from "./dialog-create-table";
 import DialogUpdateTable from "./dialog-update-table";
+import DialogDeleteTable from "./dialog-delete-table";
 
 export default function TableManagement() {
   const supabase = createClient();
@@ -134,7 +135,7 @@ export default function TableManagement() {
         <h1 className="text-2xl font-bold">Table Management</h1>
         <div className="flex gap-2">
           <Input
-            placeholder="Search by name, capacity or status"
+            placeholder="Search..."
             onChange={(e) => handleChangeSearch(e.target.value)}
           />
           <Dialog>
@@ -161,12 +162,12 @@ export default function TableManagement() {
         currentData={selectedAction?.data}
         handleChangeAction={handleChangeAction}
       />
-      {/* <DialogDeleteMenu
+      <DialogDeleteTable
         open={selectedAction !== null && selectedAction?.type === "delete"}
         refetch={refetch}
         currentData={selectedAction?.data}
         handleChangeAction={handleChangeAction}
-      /> */}
+      />
     </div>
   );
 }
