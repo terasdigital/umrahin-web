@@ -6,3 +6,38 @@ export const HEADER_TABLE_ORDER = [
   "Status",
   "Action",
 ];
+
+export const INITIAL_STATE_ORDER = {
+  status: "idle",
+  errors: {
+    customer_name: [],
+    table_id: [],
+    status: [],
+    _form: [],
+  },
+};
+
+export const INITIAL_ORDER = {
+  customer_name: "",
+  table_id: "",
+  status: "",
+};
+
+export const STATUS_CREATE_ORDER = [
+  {
+    value: "reserved",
+    label: "Reserved",
+  },
+  {
+    value: "process",
+    label: "Process",
+  },
+  {
+    value: "settle",
+    label: "Settle",
+  },
+  {
+    value: "canceled",
+    label: "Canceled",
+  },
+];

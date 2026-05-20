@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { AVAILABILITY_LIST } from "@/constants/menu-constant";
 
 export default function FormSelect<T extends FieldValues>({
   form,
@@ -21,7 +20,7 @@ export default function FormSelect<T extends FieldValues>({
   name: Path<T>;
   label: string;
   placeholder?: string;
-  selectItem: { label: string; value: string; disable?: boolean }[];
+  selectItem: { label: string; value: string; disabled?: boolean }[];
 }) {
   return (
     <FieldGroup>
@@ -42,7 +41,7 @@ export default function FormSelect<T extends FieldValues>({
                     <SelectItem
                       key={item.label}
                       value={item.value}
-                      disabled={item.disable}
+                      disabled={item.disabled}
                       className="capitalize"
                     >
                       {item.label}
