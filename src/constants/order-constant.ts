@@ -41,3 +41,11 @@ export const STATUS_CREATE_ORDER = [
     label: "Canceled",
   },
 ];
+
+export const HEADER_TABLE_DETAIL_ORDER = [
+  "No",
+  "Menu",
+  "Total",
+  "Status",
+  "Actions",
+];
