@@ -6,6 +6,7 @@ export default function useDataTable() {
   const [currentPage, setCurrentPage] = useState(DEFAULT_PAGE);
   const [currentLimit, setCurrentLimit] = useState(DEFAULT_LIMITS);
   const [currentSearch, setCurrentSearch] = useState("");
+  const [currentFilter, setCurrentFilter] = useState("");
   const debounce = useDebounce();
 
   const handleChangePage = (page: number) => {
@@ -24,6 +25,12 @@ export default function useDataTable() {
     }, 500);
   };
 
+  const handleChangeFilter = (filter: string) => {
+    setCurrentFilter(filter);
+    setCurrentPage(DEFAULT_PAGE);
+    setCurrentSearch("");
+  };
+
   return {
     currentPage,
     currentLimit,
@@ -31,5 +38,7 @@ export default function useDataTable() {
     handleChangeLimit,
     currentSearch,
     handleChangeSearch,
+    currentFilter,
+    handleChangeFilter,
   };
 }
