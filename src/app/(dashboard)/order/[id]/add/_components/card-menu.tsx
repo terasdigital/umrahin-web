@@ -5,7 +5,13 @@ import { Menu } from "@/validations/menu-validation";
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 
-export default function CardMenu({ menu }: { menu: Menu }) {
+export default function CardMenu({
+  menu,
+  onAddToCart,
+}: {
+  menu: Menu;
+  onAddToCart: (menu: Menu, action: "increment" | "decrement") => void;
+}) {
   return (
     <Card key={menu.id} className="w-full h-fit border shadow-sm p-0 gap-0">
       <Image
@@ -14,7 +20,8 @@ export default function CardMenu({ menu }: { menu: Menu }) {
         width={400}
         height={400}
         className="w-full object-cover rounded-t-lg"
-      ></Image>
+        unoptimized
+      />
       <CardContent className="px-4 py-2">
         <h3 className="text-lg font-semibold">{menu.name}</h3>
         <p className="text-sm text-muted-foreground line-clamp-2">
@@ -23,7 +30,10 @@ export default function CardMenu({ menu }: { menu: Menu }) {
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center">
         <div className="text-xl font-bold">{convertIDR(menu.price)}</div>
-        <Button className="cursor-pointer">
+        <Button
+          className="cursor-pointer"
+          onClick={() => onAddToCart(menu, "increment")}
+        >
           <ShoppingCart />
         </Button>
       </CardFooter>
