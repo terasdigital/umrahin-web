@@ -1,20 +1,13 @@
-import { INITIAL_STATE_UPDATE_USER } from "@/constants/auth-constant";
-import {
-  UpdateUserForm,
-  updateUserSchema,
-} from "@/validations/auth-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import { startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { updateMenu } from "../actions";
 import { Preview } from "@/types/general";
 import FormMenu from "./form-menu";
-import { Profile } from "@/types/auth";
 import { Dialog } from "@/components/ui/dialog";
 import { Menu, MenuForm, menuSchemaForm } from "@/validations/menu-validation";
-import { INITIAL_MENU, INITIAL_STATE_MENU } from "@/constants/menu-constant";
+import { INITIAL_STATE_MENU } from "@/constants/menu-constant";
 
 export default function DialogUpdateMenu({
   refetch,

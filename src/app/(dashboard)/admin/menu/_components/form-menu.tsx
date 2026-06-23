@@ -1,4 +1,6 @@
 import FormImage from "@/components/common/form-image";
+import FormInput from "@/components/common/form-input";
+import FormSelect from "@/components/common/form-select";
 import { Button } from "@/components/ui/button";
 import {
   DialogClose,
@@ -25,7 +27,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ROLE_LIST } from "@/constants/auth-constant";
 import { AVAILABILITY_LIST, CATEGORY_LIST } from "@/constants/menu-constant";
 import { Preview } from "@/types/general";
 import { Loader2 } from "lucide-react";
@@ -57,147 +58,52 @@ export default function FormMenu<T extends FieldValues>({
       </DialogHeader>
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-4 max-h-[50vh] overflow-y-auto">
-          <FieldGroup>
-            <Controller
-              name={"name" as Path<T>}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Name</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Insert Menu Name"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name={"description" as Path<T>}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Description</FieldLabel>
-                  <Textarea
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Insert Menu Description"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name={"category" as Path<T>}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Category</FieldLabel>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={`Select ${field.name}`} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>{field.name}</SelectLabel>
-                        {CATEGORY_LIST.map((item) => (
-                          <SelectItem key={item.label} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Select>
-                </Field>
-              )}
-            />
-            <Controller
-              name={"price" as Path<T>}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Price</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Insert Menu Price"
-                    autoComplete="off"
-                    type="number"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name={"discount" as Path<T>}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Discount</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Insert Menu Discount"
-                    autoComplete="off"
-                    type="number"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <FormImage
-              form={form}
-              name={"image_url" as Path<T>}
-              label="Image"
-              preview={preview}
-              setPreview={setPreview}
-            />
-            <Controller
-              name={"is_available" as Path<T>}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Availability</FieldLabel>
-                  <Select onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder={`Select ${field.name}`} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>{field.name}</SelectLabel>
-                        {AVAILABILITY_LIST.map((item) => (
-                          <SelectItem key={item.label} value={item.value}>
-                            {item.label}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </Select>
-                </Field>
-              )}
-            />
-          </FieldGroup>
+          <FormInput
+            form={form}
+            name={"name" as Path<T>}
+            label="Name"
+            placeholder="Insert Menu Name"
+          />
+          <FormInput
+            form={form}
+            name={"description" as Path<T>}
+            label="Description"
+            placeholder="Insert Menu Description"
+          />
+          <FormInput
+            form={form}
+            name={"category" as Path<T>}
+            label="Category"
+            placeholder="Insert Menu Category"
+          />
+          <FormInput
+            form={form}
+            name={"price" as Path<T>}
+            label="Price"
+            placeholder="Insert Menu Price"
+            type="number"
+          />
+          <FormInput
+            form={form}
+            name={"discount" as Path<T>}
+            label="Discount"
+            placeholder="Insert Menu Discount"
+            type="number"
+          />
+          <FormImage
+            form={form}
+            name={"image_url" as Path<T>}
+            label="Image"
+            preview={preview}
+            setPreview={setPreview}
+          />
+          <FormSelect
+            form={form}
+            name={"is_available" as Path<T>}
+            label="Availability"
+            placeholder="Select Availability"
+            selectItem={AVAILABILITY_LIST}
+          />
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
