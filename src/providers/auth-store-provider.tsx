@@ -24,7 +24,7 @@ export default function AuthStoreProvider({
       useAuthStore.getState().setUser(user);
       useAuthStore.getState().setProfile(profile);
     });
-  }, []);
+  }, [profile]);
 
   return <>{children}</>;
 }
