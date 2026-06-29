@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import useDataTable from "@/hooks/use-data-table";
-import { createClient } from "@/lib/supabase/client";
+import { createClientSupabase } from "@/lib/supabase/default";
 import { useQuery } from "@tanstack/react-query";
 import {
   startTransition,
@@ -17,10 +17,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Table } from "@/validations/table-validation";
-import {
-  HEADER_TABLE_ORDER,
-  INITIAL_STATE_ORDER,
-} from "@/constants/order-constant";
+import { HEADER_TABLE_ORDER } from "@/constants/order-constant";
 import DialogCreateOrder from "./dialog-create-order";
 import { updateReservation } from "../actions";
 import { INITIAL_STATE_ACTION } from "@/constants/general-constant";
@@ -29,7 +26,7 @@ import Link from "next/link";
 import { useAuthStore } from "@/stores/auth-store";
 
 export default function OrderManagement() {
-  const supabase = createClient();
+  const supabase = createClientSupabase();
   const {
     currentPage,
     currentLimit,
@@ -44,7 +41,7 @@ export default function OrderManagement() {
   const {
     data: orders,
     isLoading,
-    refetch,
+    refetch: refetchOrders,
   } = useQuery({
     queryKey: ["orders", currentLimit, currentPage, currentSearch],
     queryFn: async () => {
@@ -87,6 +84,28 @@ export default function OrderManagement() {
       return result.data as Table[] | null;
     },
   });
+
+  useEffect(() => {
+    const channel = supabase
+      .channel("change-order")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "orders",
+        },
+        () => {
+          refetchOrders();
+          refetchTables();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const [selectedAction, setSelectedAction] = useState<{
     data: Table;
@@ -137,7 +156,7 @@ export default function OrderManagement() {
 
     if (reservedState?.status === "success") {
       toast.success("Update Reservation Success");
-      refetch();
+      refetchOrders();
       refetchTables();
     }
   }, [reservedState]);
@@ -230,7 +249,7 @@ export default function OrderManagement() {
               <DialogTrigger asChild>
                 <Button variant="outline">Create</Button>
               </DialogTrigger>
-              <DialogCreateOrder tables={tables} refetch={refetch} />
+              <DialogCreateOrder tables={tables} />
             </Dialog>
           )}
         </div>
