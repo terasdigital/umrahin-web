@@ -38,8 +38,6 @@ export default function DetailOrder({ id }: { id: string }) {
         .eq("order_id", id)
         .single();
 
-      console.log(result);
-
       if (result.error)
         toast.error("Get Order data failed", {
           description: result.error.message,
@@ -64,7 +62,7 @@ export default function DetailOrder({ id }: { id: string }) {
           filter: `order_id=eq.${order.id}`,
         },
         () => {
-          refetchOrderMenu;
+          refetchOrderMenu();
         },
       )
       .subscribe();
@@ -125,6 +123,7 @@ export default function DetailOrder({ id }: { id: string }) {
 
     if (updateStatusOrderState?.status === "success") {
       toast.success("Update Status Order Success");
+      refetchOrderMenu();
     }
   }, [updateStatusOrderState]);
 
@@ -149,7 +148,7 @@ export default function DetailOrder({ id }: { id: string }) {
         </div>,
         <div>{convertIDR(item.menus.price * item.quantity)}</div>,
         <div
-          className={cn("px-2 py-1 rounded-full text-white w-fit capitalized", {
+          className={cn("px-2 py-1 rounded-full text-white w-fit capitalize", {
             "bg-gray-500": item.status === "pending",
             "bg-yellow-500": item.status === "process",
             "bg-blue-500": item.status === "ready",
