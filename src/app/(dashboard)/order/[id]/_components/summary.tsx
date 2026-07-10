@@ -110,7 +110,11 @@ export default function Summary({
             <Button
               type="submit"
               onClick={handleGeneratePayment}
-              disabled={!isAllServed || isPedingGeneratePayment}
+              disabled={
+                !isAllServed ||
+                isPedingGeneratePayment ||
+                orderMenu?.length === 0
+              }
               className="w-full font-semibol bg-teal-500 hover:bg-teal-600 text-white cursor-pointer"
             >
               {isPedingGeneratePayment ? (
