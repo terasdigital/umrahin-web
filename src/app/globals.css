@@ -136,4 +136,9 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  .react-flow__node {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 }
