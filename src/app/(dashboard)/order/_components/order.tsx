@@ -97,6 +97,36 @@ export default function OrderManagement() {
     },
   });
 
+  const { data: activeOrders, refetch: refetchActiveOrders } = useQuery({
+    queryKey: ["active-orders"],
+    queryFn: async () => {
+      const query = supabase
+        .from("orders")
+        .select(
+          `
+          id, order_id, customer_name, status, payment_token, tables (name, id)
+          `,
+        )
+        .in("status", ["process", "reserved"])
+        .order("created_at");
+
+      if (currentSearch) {
+        query.or(
+          `order_id.ilike.%${currentSearch}%,customer_name.ilike.%${currentSearch}%,status.ilike.%${currentSearch}%`,
+        );
+      }
+
+      const result = await query;
+      if (result.error) {
+        toast.error("Get Order data failed", {
+          description: result.error.message,
+        });
+      }
+
+      return result.data || [];
+    },
+  });
+
   useEffect(() => {
     const channel = supabase
       .channel("change-order")
@@ -110,6 +140,7 @@ export default function OrderManagement() {
         () => {
           refetchOrders();
           refetchTables();
+          refetchActiveOrders();
         },
       )
       .subscribe();
@@ -130,7 +161,7 @@ export default function OrderManagement() {
     INITIAL_STATE_ACTION,
   );
 
-  const handelReservation = async ({
+  const handleReservation = async ({
     id,
     table_id,
     status,
@@ -161,6 +192,7 @@ export default function OrderManagement() {
       toast.success("Update Reservation Success");
       refetchOrders();
       refetchTables();
+      refetchActiveOrders();
     }
   }, [reservedState]);
 
@@ -173,7 +205,7 @@ export default function OrderManagement() {
         </span>
       ),
       action: (id: string, table_id: string) => {
-        handelReservation({ id, table_id, status: "process" });
+        handleReservation({ id, table_id, status: "process" });
       },
     },
     {
@@ -184,7 +216,7 @@ export default function OrderManagement() {
         </span>
       ),
       action: (id: string, table_id: string) => {
-        handelReservation({ id, table_id, status: "canceled" });
+        handleReservation({ id, table_id, status: "canceled" });
       },
     },
   ];
@@ -239,6 +271,16 @@ export default function OrderManagement() {
   }, [orders]);
 
   const [openCreateOrder, setOpenCreateOrder] = useState(false);
+
+  // const activeOrders = useMemo(() => {
+  //   return (
+  //     orders?.data?.filter(
+  //       (order) =>
+  //         (order.status === "process" || order.status === "reserved") &&
+  //         order.tables,
+  //     ) || []
+  //   );
+  // }, [orders]);
 
   return (
     <div className="w-full">
@@ -317,7 +359,17 @@ export default function OrderManagement() {
       /> */}
         </TabsContent>
         <TabsContent value="map">
-          <TableMap tables={tables || []} />
+          <TableMap
+            tables={tables || []}
+            activeOrders={activeOrders || []}
+            handleReservation={(
+              id: string,
+              table_id: string,
+              status: string,
+            ) => {
+              handleReservation({ id, table_id, status });
+            }}
+          />
         </TabsContent>
       </Tabs>
     </div>
